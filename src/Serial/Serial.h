@@ -21,6 +21,16 @@ public:
 private:
 	inline void OpenPort(std::string port_name, long buadrate);
 	inline void ClosePort();
+	inline bool PortisValid() { return (port != INVALID_HANDLE_VALUE); }
+
+	/*
+		функции работы с портом спрятаны внутри класса, так как будут вызываться внутри process()
+	*/
+	size_t WriteToPort(char *buf, size_t numbutes);
+	size_t ReadAllFromPort(char* buf, size_t numbytes);
+	size_t ReadMesFromPort(char* buf, size_t numbytes);
+
+
 
 
 

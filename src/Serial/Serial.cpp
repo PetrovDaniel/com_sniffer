@@ -152,7 +152,7 @@ void SerialPort::OpenPort(std::string port_name, long baudrate)
 
 	this->port = CreateFile(port_name.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, 0);
 
-	if (this->port == INVALID_HANDLE_VALUE)
+	if (PortisValid())
 		throw "Invalid port name!";
 
 	std::cout << "port open" << port_name << std::endl;
@@ -176,6 +176,52 @@ void SerialPort::OpenPort(std::string port_name, long baudrate)
 */
 void SerialPort::ClosePort()
 {
-	if (this->port != INVALID_HANDLE_VALUE)
+	if (PortisValid())
 		CloseHandle(port);			
+}
+
+/** @brief функци€ записи в порт
+*/
+size_t SerialPort::WriteToPort(char *buf, size_t numbytes)
+{
+	DWORD wrtnbytes = 0;			// счЄтчик записанных байт.
+
+	if (!buf)
+		throw "Invalid buf";
+
+	if (PortisValid())
+		if ( !(WriteFile(this->port, buf, static_cast<DWORD>(numbytes), &wrtnbytes, NULL)))
+			throw "Could not write to port error " + GetLastError();
+
+	return static_cast<size_t>(wrtnbytes);
+}
+
+size_t SerialPort::ReadAllFromPort(char* buf, size_t numbytes)
+{
+	static DWORD sizemes = 0;		//—четчик прочитанных байт.
+	DWORD lpError;
+	COMSTAT lpStat;
+	int result = 0;
+
+	if (!buf)
+		return 0;
+
+	if (PortisValid())
+	{
+		ClearCommError(this->port, &lpError, &lpStat);
+		// нет ошибок и в буфере есть данные 
+		if (lpError == 0 && lpStat.cbInQue != 0)
+		{
+			ZeroMemory(buf, numbytes);
+
+			if ( !(ReadFile(this->port, buf, static_cast<DWORD>(numbytes), &sizemes, NULL)))
+				throw "Could not read from port error " + GetLastError();
+		}
+	}
+	return static_cast<size_t>(sizemes);
+}
+
+size_t SerialPort::ReadMesFromPort(char* buf, size_t numbytes)
+{
+	return 0;
 }
