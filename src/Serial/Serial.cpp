@@ -125,16 +125,9 @@ int ReadPort(HANDLE* hName, char mes[], size_t numbytes)
 	return result;
 }
 
-SerialPort::SerialPort(std::string port_name, long baudrate)
+SerialPort::SerialPort(std::string &port_name, long baudrate)
 {
-	try
-	{
-		SerialPort::OpenPort(port_name, baudrate);
-	}
-	catch (const std::string &str)
-	{
-		std::cout << "Error: " << str << std::endl;
-	}
+	SerialPort::OpenPort(port_name, baudrate);
 }
 
 SerialPort::~SerialPort()
@@ -144,7 +137,7 @@ SerialPort::~SerialPort()
 
 /** @brief функция открытия порта
 */
-void SerialPort::OpenPort(std::string port_name, long baudrate)
+void SerialPort::OpenPort(std::string &port_name, long baudrate)
 {
 
 	if (port_name.length() == 0)
@@ -162,12 +155,16 @@ void SerialPort::OpenPort(std::string port_name, long baudrate)
 
 	DCB dcb;
 
-	GetCommState(this->port, &dcb);
+	if(!GetCommState(this->port, &dcb))
+		throw "Cannot get port settings";
+
 	dcb.BaudRate = baudrate;
 	dcb.StopBits = ONESTOPBIT;
 	dcb.Parity = NOPARITY;
 	dcb.ByteSize = 8;
-	SetCommState(this->port, &dcb);
+
+	if(!SetCommState(this->port, &dcb))
+		throw "Cannot set port settings";
 	
 	return;
 }
@@ -176,8 +173,7 @@ void SerialPort::OpenPort(std::string port_name, long baudrate)
 */
 void SerialPort::ClosePort()
 {
-	if (PortisValid())
-		CloseHandle(port);			
+	CloseHandle(port);			
 }
 
 /** @brief функция записи в порт
@@ -189,9 +185,8 @@ size_t SerialPort::WriteToPort(char *buf, size_t numbytes)
 	if (!buf)
 		throw "Invalid buf";
 
-	if (PortisValid())
-		if ( !(WriteFile(this->port, buf, static_cast<DWORD>(numbytes), &wrtnbytes, NULL)))
-			throw "Could not write to port error " + GetLastError();
+	if ( !(WriteFile(this->port, buf, static_cast<DWORD>(numbytes), &wrtnbytes, NULL)))
+		throw "Could not write to port error " + GetLastError();
 
 	return static_cast<size_t>(wrtnbytes);
 }
@@ -203,25 +198,107 @@ size_t SerialPort::ReadAllFromPort(char* buf, size_t numbytes)
 	COMSTAT lpStat;
 	int result = 0;
 
-	if (!buf)
+	if (!buf || this->port == INVALID_HANDLE_VALUE)
 		return 0;
 
-	if (PortisValid())
+	ClearCommError(this->port, &lpError, &lpStat);
+	// нет ошибок и в буфере есть данные 
+	if (lpError == 0 && lpStat.cbInQue != 0)
 	{
-		ClearCommError(this->port, &lpError, &lpStat);
-		// нет ошибок и в буфере есть данные 
-		if (lpError == 0 && lpStat.cbInQue != 0)
-		{
-			ZeroMemory(buf, numbytes);
-
-			if ( !(ReadFile(this->port, buf, static_cast<DWORD>(numbytes), &sizemes, NULL)))
-				throw "Could not read from port error " + GetLastError();
-		}
+		ZeroMemory(buf, numbytes);
+	
+		if ( !(ReadFile(this->port, buf, static_cast<DWORD>(numbytes), &sizemes, NULL)))
+			throw "Could not read from port error " + GetLastError();
 	}
+
 	return static_cast<size_t>(sizemes);
 }
 
-size_t SerialPort::ReadMesFromPort(char* buf, size_t numbytes)
+
+
+size_t SerialPort::ReadMesFromPort(char* buf)
 {
+	DWORD sizemes = 0;		//Счетчик прочитанных байт.
+	DWORD lpError;
+	COMSTAT lpStat;
+	LPVOID lpData;
+
+	char temp;
+
+	static bool cmd = false;
+	static char temp_cmd[BUFFERSIZE];
+	static int cmd_lenght = 0;
+
+
+	lpData = static_cast<LPVOID>(&temp);
+
+
+	if (!buf || this->port == INVALID_HANDLE_VALUE)
+		return 0;
+
+
+	/*
+	Читаем по одному байту пока не получим начало команды и читаем до конца команды
+	Если прочитали все. что было в порту. и не нашли конец команды, то возвращаем, что ничего не прочитали
+	На следующем заходе в функцию дочитываем команду и возвращшаем ее.
+	*/
+	ClearCommError(this->port, &lpError, &lpStat);
+	if (lpError == 0)
+	{
+		if (lpStat.cbInQue > 0)
+		{
+
+			for (int j = 0; j < lpStat.cbInQue; j++)
+			{
+				if (!(ReadFile(this->port, lpData, 1, &sizemes, NULL)))
+					break;
+
+				if (temp == START_MES)
+				{
+					cmd = true;
+					cmd_lenght = 0;
+				}
+
+				if (cmd)
+				{
+					buf[cmd_lenght] = temp;
+					cmd_lenght++;
+					if (temp == END_MES)
+					{
+						memcpy(buf, temp_cmd, cmd_lenght);
+						ZeroMemory(buf, cmd_lenght);
+						//memset(temp_cmd, NULL, cmd_lenght);
+						cmd = false;
+						return cmd_lenght;
+					}
+				}
+			}
+		}
+	}
+
 	return 0;
 }
+
+
+// void SerialPort::process()
+// {
+// 	if (!PortisValid())
+// 		return;	// !!!!!!
+// 	
+// 	for (;;)
+// 	{
+// 		_buffer_t buf;
+// 
+// 		buf.src = &(this->port);
+// 
+// 		if (buf.size = ReadMesFromPort(buf.data))
+// 			storage.PushMes(buf);
+// 
+// 		storage.GetMesByPortId(&(this->port), buf);
+// 		if (buf.size > 0)
+// 		{
+// 			WriteToPort(buf.data, buf.size);
+// 		}
+// 
+// 	}
+// }
