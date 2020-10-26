@@ -34,8 +34,8 @@ void Storage::PushMes(_buffer_t &mes)
 		this->storage.push_back(mes);
 }
 
-//template <typename T>
-size_t RingStorage :: getemptyidx()
+template <typename T>
+size_t RingStorage<T>:: getemptyidx()
 {
 	return (current_idx++) % STORAGE_SIZE;
 }

@@ -71,98 +71,106 @@ DWORD WINAPI Thread(PVOID pvParam)
 	return 0;
 }
 
-int main(int argc, char *argv[])
+//int main(int argc, char *argv[])
+// {
+// 
+// 	HANDLE port1 = NULL;										//Указатель порта.
+// 	HANDLE port2 = NULL;
+// 	DWORD ThreadID1;										//Идентификатор первого потока.
+// 	DWORD ThreadID2;									//Идентификатор второго потока.
+// 	char *buf = NULL;
+// 	DWORD baudrate = 0;
+// 
+// 
+// 	printf("Enter baudrate: ");
+// 	if (!GetString(&buf))
+// 	{
+// 		printf("\n Error! \n");
+// 		return 0;
+// 	}
+// 
+// 	baudrate = (DWORD) atoi(buf);
+// 
+// 	// получаем имя первого порта и пытаемся открыть его
+// 
+// 
+// 	printf("Enter name COM port first point: ");
+// 	if (!GetString(&buf))
+// 	{
+// 		printf("\n Error! \n");
+// 		return 0;
+// 	}
+// 
+// 	if(!OpenPort(&port1, buf, baudrate))
+// 		return 0;
+// 
+// 	// получаем имя первого порта и пытаемся открыть его
+// 	printf("Enter name COM port second point: ");
+// 	if (!GetString(&buf))
+// 	{
+// 		printf("\n Error! \n");
+// 		return 0;
+// 	}
+// 
+// 	if (!OpenPort(&port2, buf, baudrate))
+// 		return 0;
+// 
+// 	thread_t port_1_strct;
+// 	port_1_strct.port = &port1;
+// 	thread_t port_2_strct;
+// 	port_2_strct.port = &port2;
+// 
+// 	buffer_t out_port1_in_port_2;
+// 	buffer_t out_port2_in_port_1;
+// 
+// 	// сохраняем указатели на буферы в обе структуры для потоков
+// 	port_1_strct.tx_buf = &out_port2_in_port_1;
+// 	port_1_strct.rx_buf = &out_port1_in_port_2;
+// 
+// 	port_2_strct.tx_buf = &out_port1_in_port_2;
+// 	port_2_strct.rx_buf = &out_port2_in_port_1;
+// 
+// 	ZeroMemory(out_port1_in_port_2.data, BUFFERSIZE);
+// 	ZeroMemory(out_port2_in_port_1.data, BUFFERSIZE);
+// 
+// 
+// 	HANDLE hThread1 = CreateThread(NULL, 0, Thread, (PVOID)&port_1_strct, 0, &ThreadID1);	//Создание первого потока.
+// 	HANDLE hThread2 = CreateThread(NULL, 0, Thread, (PVOID)&port_2_strct, 0, &ThreadID2);	//Создание второго потока.
+// 	
+// 	FILE *fq = fopen("LOG.txt", "w");
+// 
+// 
+// 	for (;;)
+// 	{
+// 		if (out_port1_in_port_2.status == DATA_RECEIVE)
+// 		{
+// 			if (write_to_file(out_port1_in_port_2.data, fq, out_port1_in_port_2.size))
+// 				printf("\n Error! Can't write to file \n");
+// 			out_port1_in_port_2.status = READY_TO_SEND;
+// 		}
+// 
+// 		if (out_port2_in_port_1.status == DATA_RECEIVE)
+// 		{
+// 			if (write_to_file(out_port2_in_port_1.data, fq, out_port2_in_port_1.size))
+// 				printf("\n Error! Can't write to file \n");
+// 			out_port2_in_port_1.status = READY_TO_SEND;
+// 		}
+// 
+// 		Sleep(10);
+// 	}
+// 
+// 	free(buf);
+// 	ClosePort(&port1);
+// 	ClosePort(&port2);
+// 	fclose(fq);
+// 
+// 	return 0;
+// }
+
+int main()
 {
+	std::string port_name = "COM3";
 
-	HANDLE port1 = NULL;										//Указатель порта.
-	HANDLE port2 = NULL;
-	DWORD ThreadID1;										//Идентификатор первого потока.
-	DWORD ThreadID2;									//Идентификатор второго потока.
-	char *buf = NULL;
-	DWORD baudrate = 0;
-
-
-	printf("Enter baudrate: ");
-	if (!GetString(&buf))
-	{
-		printf("\n Error! \n");
-		return 0;
-	}
-
-	baudrate = (DWORD) atoi(buf);
-
-	// получаем имя первого порта и пытаемся открыть его
-
-
-	printf("Enter name COM port first point: ");
-	if (!GetString(&buf))
-	{
-		printf("\n Error! \n");
-		return 0;
-	}
-
-	if(!OpenPort(&port1, buf, baudrate))
-		return 0;
-
-	// получаем имя первого порта и пытаемся открыть его
-	printf("Enter name COM port second point: ");
-	if (!GetString(&buf))
-	{
-		printf("\n Error! \n");
-		return 0;
-	}
-
-	if (!OpenPort(&port2, buf, baudrate))
-		return 0;
-
-	thread_t port_1_strct;
-	port_1_strct.port = &port1;
-	thread_t port_2_strct;
-	port_2_strct.port = &port2;
-
-	buffer_t out_port1_in_port_2;
-	buffer_t out_port2_in_port_1;
-
-	// сохраняем указатели на буферы в обе структуры для потоков
-	port_1_strct.tx_buf = &out_port2_in_port_1;
-	port_1_strct.rx_buf = &out_port1_in_port_2;
-
-	port_2_strct.tx_buf = &out_port1_in_port_2;
-	port_2_strct.rx_buf = &out_port2_in_port_1;
-
-	ZeroMemory(out_port1_in_port_2.data, BUFFERSIZE);
-	ZeroMemory(out_port2_in_port_1.data, BUFFERSIZE);
-
-
-	HANDLE hThread1 = CreateThread(NULL, 0, Thread, (PVOID)&port_1_strct, 0, &ThreadID1);	//Создание первого потока.
-	HANDLE hThread2 = CreateThread(NULL, 0, Thread, (PVOID)&port_2_strct, 0, &ThreadID2);	//Создание второго потока.
-	
-	FILE *fq = fopen("LOG.txt", "w");
-
-
-	for (;;)
-	{
-		if (out_port1_in_port_2.status == DATA_RECEIVE)
-		{
-			if (write_to_file(out_port1_in_port_2.data, fq, out_port1_in_port_2.size))
-				printf("\n Error! Can't write to file \n");
-			out_port1_in_port_2.status = READY_TO_SEND;
-		}
-
-		if (out_port2_in_port_1.status == DATA_RECEIVE)
-		{
-			if (write_to_file(out_port2_in_port_1.data, fq, out_port2_in_port_1.size))
-				printf("\n Error! Can't write to file \n");
-			out_port2_in_port_1.status = READY_TO_SEND;
-		}
-
-		Sleep(10);
-	}
-
-	free(buf);
-	ClosePort(&port1);
-	ClosePort(&port2);
-	fclose(fq);
-
+	PortHandler sp(port_name, 9600);
 	return 0;
 }

@@ -145,10 +145,10 @@ void SerialPort::OpenPort(std::string &port_name, long baudrate)
 
 	this->port = CreateFile(port_name.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, 0);
 
-	if (PortisValid())
+	if (!PortisValid())
 		throw "Invalid port name!";
 
-	std::cout << "port open" << port_name << std::endl;
+	std::cout << "port open " << port_name << std::endl;
 	/*
 	По хорошему, надо переделать и передавать всю структуру в конструктор класса
 	*/
