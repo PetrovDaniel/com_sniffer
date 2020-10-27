@@ -70,6 +70,7 @@
     <NMakeReBuildCommandLine>"make" clean
 "make" build -j32</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <OutDir>..\..</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakeBuildCommandLine>"make" build</NMakeBuildCommandLine>
@@ -86,12 +87,17 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\Line\Line.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
+    <ClCompile Include="..\..\src\PortHandler\PortHandler.cpp" />
     <ClCompile Include="..\..\src\Serial\Serial.cpp" />
+    <ClCompile Include="..\..\src\Storage\Storage.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\general_types.h" />
     <ClInclude Include="..\..\src\Line\Line.h" />
+    <ClInclude Include="..\..\src\PortHandler\PortHandler.h" />
     <ClInclude Include="..\..\src\Serial\Serial.h" />
-    <ClInclude Include="sniffer.h" />
+    <ClInclude Include="..\..\src\sniffer.h" />
+    <ClInclude Include="..\..\src\Storage\Storage.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
