@@ -145,10 +145,10 @@ void SerialPort::OpenPort(std::string &port_name, long baudrate)
 
 	this->port = CreateFile(port_name.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, 0);
 
-	if (PortisValid())
+	if (!PortisValid())
 		throw "Invalid port name!";
 
-	std::cout << "port open" << port_name << std::endl;
+	std::cout << "port open " << port_name << std::endl;
 	/*
 	По хорошему, надо переделать и передавать всю структуру в конструктор класса
 	*/
@@ -187,6 +187,12 @@ size_t SerialPort::WriteToPort(char *buf, size_t numbytes)
 
 	if ( !(WriteFile(this->port, buf, static_cast<DWORD>(numbytes), &wrtnbytes, NULL)))
 		throw "Could not write to port error " + GetLastError();
+
+	std::cout << std::endl << "<---";
+	for (size_t i = 0; i < numbytes; i++)
+		std::cout << std::hex << static_cast<int>(buf[i]);
+
+	//std::cout << buf;
 
 	return static_cast<size_t>(wrtnbytes);
 }
@@ -257,16 +263,18 @@ size_t SerialPort::ReadMesFromPort(char* buf)
 				{
 					cmd = true;
 					cmd_lenght = 0;
+					std::cout << std::endl << "--->";
 				}
 
 				if (cmd)
 				{
-					buf[cmd_lenght] = temp;
+					std::cout << std::hex << static_cast<int>(temp);
+					temp_cmd[cmd_lenght] = temp;
 					cmd_lenght++;
 					if (temp == END_MES)
 					{
 						memcpy(buf, temp_cmd, cmd_lenght);
-						ZeroMemory(buf, cmd_lenght);
+						//ZeroMemory(buf, cmd_lenght);
 						//memset(temp_cmd, NULL, cmd_lenght);
 						cmd = false;
 						return cmd_lenght;

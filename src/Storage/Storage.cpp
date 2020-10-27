@@ -34,17 +34,18 @@ void Storage::PushMes(_buffer_t &mes)
 		this->storage.push_back(mes);
 }
 
-//template <typename T>
-size_t RingStorage :: getemptyidx()
+template <typename T>
+size_t RingStorage<T>:: getemptyidx()
 {
 	return (current_idx++) % STORAGE_SIZE;
 }
 
 void MesStorage :: push(HANDLE *port, _buffer_t &mes)
 {
-	storage[getemptyidx()].data = mes;
-	storage[getemptyidx()].data.src = port;
-	storage[getemptyidx()].status = _FULL;
+	size_t idx = getemptyidx();
+	storage[idx].data = mes;
+	storage[idx].data.src = port;
+	storage[idx].status = _FULL;
 }
 
 void MesStorage::pop(HANDLE *port, _buffer_t &mes)
@@ -53,9 +54,10 @@ void MesStorage::pop(HANDLE *port, _buffer_t &mes)
 
 	for (size_t idx = 0; idx < STORAGE_SIZE; idx++)
 	{
-		if (storage[idx].status == _FULL && storage[idx].data.src == port)
+		if (storage[idx].status == _FULL && storage[idx].data.src != port)
 		{
 			mes = storage[idx].data;
+			storage[idx].status = _EMPTY;
 		}
 	}
 

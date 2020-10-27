@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "Serial/Serial.h"	
 #include "Line/Line.h"
+#include "PortHandler/PortHandler.h"
 
 #define BUFFERSIZE 2000								//Размер массивов, выделяемых для записи или чтения портов.
 
