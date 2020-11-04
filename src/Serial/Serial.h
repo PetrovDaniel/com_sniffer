@@ -7,8 +7,10 @@
 #include <stdio.h>
 #include <string>
 #include <iostream>
+
 //#include "../Storage/Storage.h"
 #include "../general_types.h"
+#include "../SerialInterface/SerialInterface.h"
 
 
 bool OpenPort(HANDLE* hName, char aPort[], DWORD baudrate);
@@ -19,17 +21,15 @@ int ReadPort(HANDLE* hName, char mes[], size_t numbytes);
 #define START_MES	0x0a
 #define END_MES		0x0d
 
-class SerialPort
+class SerialPort : public ISerialInterface
 {
 public:
-	SerialPort(std::string &port_name, long baudrate);
-	~SerialPort();
 	//void process();
 	/*
 	функции работы с портом спрятаны внутри класса, так как будут вызываться внутри process()
 	*/
 	size_t WriteToPort(char *buf, size_t numbutes);
-	size_t ReadAllFromPort(char* buf, size_t numbytes);
+	size_t ReadFromPort(char* buf, size_t numbytes);
 	size_t ReadMesFromPort(char* buf);
 	inline HANDLE *getportptr() { return &port; }
 private:

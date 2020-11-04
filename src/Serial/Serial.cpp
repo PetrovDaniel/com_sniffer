@@ -125,15 +125,7 @@ int ReadPort(HANDLE* hName, char mes[], size_t numbytes)
 	return result;
 }
 
-SerialPort::SerialPort(std::string &port_name, long baudrate)
-{
-	SerialPort::OpenPort(port_name, baudrate);
-}
 
-SerialPort::~SerialPort()
-{
-	ClosePort();
-}
 
 /** @brief функция открытия порта
 */
