@@ -2,6 +2,7 @@
 
 #include "../Serial/Serial.h"
 #include "../Storage/Storage.h"
+#include "../DataLinkLayer/DataLinkLayer.h"
 
 class PortHandler
 {
@@ -11,7 +12,7 @@ public:
 
 
 private:
-	SerialPort port;
+	DataLinkLayer port;
 	static MesStorage storage;
-	HANDLE *port_ptr;
+	_user_id_t id;
 };

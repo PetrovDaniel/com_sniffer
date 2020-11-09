@@ -10,18 +10,18 @@ MesStorage PortHandler::storage;
 
 PortHandler::PortHandler(std::string &port_name, long baudrate) : port(port_name, baudrate)
 {
-	port_ptr = port.getportptr();
+	id = storage.init();
 }
 
 void PortHandler :: Run()
 {
 	static _buffer_t buf;
 
-	buf.src = port_ptr;
+	buf.src = id;
 
  	//for (;;)
  	{
-		if (buf.size = port.ReadMesFromPort(buf.data))
+		if (buf.size = port.ReadMes(buf))
  			storage.push(buf.src, buf);
  
 // 		if (buf.size > 0)
@@ -29,9 +29,9 @@ void PortHandler :: Run()
 // 			std::cout << buf.data << std::endl;
 // 		}
 
-		storage.pop(port_ptr, buf);
+		storage.pop(id, buf);
 
  		if (buf.size > 0)
- 			port.WriteToPort(buf.data, buf.size);
+			port.WriteMes(buf);
 	} 	
 }

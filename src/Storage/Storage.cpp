@@ -34,13 +34,27 @@ void Storage::PushMes(_buffer_t &mes)
 		this->storage.push_back(mes);
 }
 
+
+
+
+
+
+
+
+
+
 template <typename T>
 size_t RingStorage<T>:: getemptyidx()
 {
 	return (current_idx++) % STORAGE_SIZE;
 }
 
-void MesStorage :: push(HANDLE *port, _buffer_t &mes)
+_user_id_t RingStorage<T>::init()
+{
+	return users_cnt++;
+}
+
+void MesStorage :: push(_user_id_t port, _buffer_t &mes)
 {
 	size_t idx = getemptyidx();
 	storage[idx].data = mes;
@@ -48,7 +62,9 @@ void MesStorage :: push(HANDLE *port, _buffer_t &mes)
 	storage[idx].status = _FULL;
 }
 
-void MesStorage::pop(HANDLE *port, _buffer_t &mes)
+
+//!!! @warn !!!! данная функция работает корректно только с двумя пользователями
+void MesStorage::pop(_user_id_t port, _buffer_t &mes)
 {
 	mes.size = 0;
 

@@ -59,6 +59,9 @@ class RingStorage
 		unsigned long status = _EMPTY;
 	}elem;
 
+public:
+	inline _user_id_t init();
+
 protected:
 	elem storage[STORAGE_SIZE];
 
@@ -68,6 +71,13 @@ protected:
 	Двигаемся по массиву по кругу
 	*/
 	inline size_t getemptyidx();
+
+
+	
+	/*
+	количество пользователей хранилища
+	*/	
+	_user_id_t users_cnt = 0;
 };
 
 
@@ -76,6 +86,6 @@ protected:
 class MesStorage : public RingStorage<_buffer_t>
 {
 public:
-	void push(HANDLE *port, _buffer_t &mes);
-	void pop(HANDLE *port, _buffer_t &mes);
+	void push(_user_id_t port, _buffer_t &mes);
+	void pop(_user_id_t port, _buffer_t &mes);
 };

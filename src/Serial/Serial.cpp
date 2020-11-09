@@ -189,24 +189,24 @@ size_t SerialPort::WriteToPort(char *buf, size_t numbytes)
 	return static_cast<size_t>(wrtnbytes);
 }
 
-size_t SerialPort::ReadAllFromPort(char* buf, size_t numbytes)
+size_t SerialPort::ReadFromPort(char* buf, size_t numbytes)
 {
 	static DWORD sizemes = 0;		//Счетчик прочитанных байт.
 	DWORD lpError;
 	COMSTAT lpStat;
 	int result = 0;
 
-	if (!buf || this->port == INVALID_HANDLE_VALUE)
+	if (!buf)
 		return 0;
 
 	ClearCommError(this->port, &lpError, &lpStat);
 	// нет ошибок и в буфере есть данные 
 	if (lpError == 0 && lpStat.cbInQue != 0)
 	{
-		ZeroMemory(buf, numbytes);
+		//ZeroMemory(buf, numbytes);
 	
 		if ( !(ReadFile(this->port, buf, static_cast<DWORD>(numbytes), &sizemes, NULL)))
-			throw "Could not read from port error " + GetLastError();
+			throw "Could not read from port error ";
 	}
 
 	return static_cast<size_t>(sizemes);
@@ -238,7 +238,7 @@ size_t SerialPort::ReadMesFromPort(char* buf)
 	/*
 	Читаем по одному байту пока не получим начало команды и читаем до конца команды
 	Если прочитали все. что было в порту. и не нашли конец команды, то возвращаем, что ничего не прочитали
-	На следующем заходе в функцию дочитываем команду и возвращшаем ее.
+	На следующем заходе в функцию дочитываем команду и возвращаем ее.
 	*/
 	ClearCommError(this->port, &lpError, &lpStat);
 	if (lpError == 0)
@@ -260,7 +260,7 @@ size_t SerialPort::ReadMesFromPort(char* buf)
 
 				if (cmd)
 				{
-					std::cout << std::hex << static_cast<int>(temp);
+					std::cout << std::hex << static_cast<int>(temp) << " ";
 					temp_cmd[cmd_lenght] = temp;
 					cmd_lenght++;
 					if (temp == END_MES)
