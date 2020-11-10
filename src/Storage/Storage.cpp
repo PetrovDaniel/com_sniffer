@@ -3,36 +3,36 @@
 
 
 
-Storage::Storage() : 
-	users(0)
-{
-	storage.reserve(50);
-}
-
-Storage::~Storage()
-{
-	;
-}
-
-void Storage::GetMesByPortId(HANDLE* port, _buffer_t &mes)
-{
-	auto itr = find_if(storage.begin(), storage.end(), [=](_buffer_t mes)
-		{
-			return (mes.src != port);
-		});
-
-
-	if ((itr != storage.end()))
-		mes = *itr;
-	else
-		mes.size = 0;
-}
-
-void Storage::PushMes(_buffer_t &mes)
-{
-	if(mes.size > 0)
-		this->storage.push_back(mes);
-}
+// Storage::Storage() : 
+// 	users(0)
+// {
+// 	storage.reserve(50);
+// }
+// 
+// Storage::~Storage()
+// {
+// 	;
+// }
+// 
+// void Storage::GetMesByPortId(HANDLE* port, _buffer_t &mes)
+// {
+// 	auto itr = find_if(storage.begin(), storage.end(), [=](_buffer_t mes)
+// 		{
+// 			return (mes.src != port);
+// 		});
+// 
+// 
+// 	if ((itr != storage.end()))
+// 		mes = *itr;
+// 	else
+// 		mes.size = 0;
+// }
+// 
+// void Storage::PushMes(_buffer_t &mes)
+// {
+// 	if(mes.size > 0)
+// 		this->storage.push_back(mes);
+// }
 
 
 
@@ -49,6 +49,7 @@ size_t RingStorage<T>:: getemptyidx()
 	return (current_idx++) % STORAGE_SIZE;
 }
 
+template <typename T>
 _user_id_t RingStorage<T>::init()
 {
 	return users_cnt++;

@@ -1,11 +1,16 @@
 // абстрактный класс интерфейс для работы с сериальным портом
 // задел на кроссплатформенность кода
 
+#pragma once
+
+#include <stddef.h>
+#include <string>
+
 class ISerialInterface
 {
 public:
-    SerialInterface(const std::string &port_name, long baubrate) { OpenPort(port_name, baudrate); }
-    ~SerialInterface() { ClosePort(); }
+    ISerialInterface();
+    ~ISerialInterface();
     virtual size_t WriteToPort(char *buf, size_t numbutes) = 0;
     virtual size_t ReadFromPort(char* buf, size_t numbytes) = 0;
 protected:

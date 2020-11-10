@@ -18,26 +18,26 @@ enum _Status
 /*
 Контейнер для хранения сообщений
 */
-class Storage
-{
-private:
-	std::vector<_buffer_t> storage;
-	size_t users;
-public:
-	Storage();
-	~Storage();
-
-	/*
-	Достать сообщение из хранилища
-	*/
-	void GetMesByPortId(HANDLE* port, _buffer_t &mes);
-	/*
-	Положить сообщение в хранилище
-	*/
-  	void PushMes(_buffer_t &mes);
-
-	size_t operator++() { return users++; }
-};
+// class Storage
+// {
+// private:
+// 	std::vector<_buffer_t> storage;
+// 	size_t users;
+// public:
+// 	Storage();
+// 	~Storage();
+// 
+// 	/*
+// 	Достать сообщение из хранилища
+// 	*/
+// 	void GetMesByPortId(HANDLE* port, _buffer_t &mes);
+// 	/*
+// 	Положить сообщение в хранилище
+// 	*/
+//   	void PushMes(_buffer_t &mes);
+// 
+// 	size_t operator++() { return users++; }
+// };
 
 
 
@@ -60,7 +60,7 @@ class RingStorage
 	}elem;
 
 public:
-	inline _user_id_t init();
+	/*inline*/ _user_id_t init();
 
 protected:
 	elem storage[STORAGE_SIZE];

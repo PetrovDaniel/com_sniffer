@@ -28,12 +28,16 @@ public:
 	/*
 	функции работы с портом спрятаны внутри класса, так как будут вызываться внутри process()
 	*/
+	// класс наследник имеет свой конструктор и деструктор
+	SerialPort(const std::string& port_name, long baudrate);
+	~SerialPort();
+
 	size_t WriteToPort(char *buf, size_t numbutes);
 	size_t ReadFromPort(char* buf, size_t numbytes);
 	size_t ReadMesFromPort(char* buf);
 	inline HANDLE *getportptr() { return &port; }
 private:
-	inline void OpenPort(std::string &port_name, long buadrate);
+	inline void OpenPort(const std::string &port_name, long buadrate);
 	inline void ClosePort();
 	inline bool PortisValid() { return (port != INVALID_HANDLE_VALUE); }
 

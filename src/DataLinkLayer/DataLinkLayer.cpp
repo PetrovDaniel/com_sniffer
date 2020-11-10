@@ -2,9 +2,9 @@
 
 
 
-DataLinkLayer::DataLinkLayer(const std::string &port_name, long baubrate)
+DataLinkLayer::DataLinkLayer(const std::string &port_name, long baudrate)
 {
-    port = SerialPort(const std::string &port_name, long baubrate);
+	port = std::make_unique<SerialPort>(port_name, baudrate);
 }
 
 DataLinkLayer::~DataLinkLayer()
@@ -14,7 +14,7 @@ DataLinkLayer::~DataLinkLayer()
 
 size_t DataLinkLayer::WriteMes(_buffer_t &mes)
 {
-    port->WriteToPort(mes.data, mes.size);
+    return port->WriteToPort(mes.data, mes.size);
 }
 
 size_t DataLinkLayer::ReadMes(_buffer_t &mes)

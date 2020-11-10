@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Serial/Serial.h"
+//#include "../Serial/Serial.h"
 #include "../Storage/Storage.h"
 #include "../DataLinkLayer/DataLinkLayer.h"
 
@@ -15,4 +15,5 @@ private:
 	DataLinkLayer port;
 	static MesStorage storage;
 	_user_id_t id;
+	_buffer_t buf;
 };
