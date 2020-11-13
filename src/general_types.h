@@ -1,7 +1,5 @@
 #pragma once
 
-#include <windows.h>
-
 #define BUFFERSIZE 2000								//Размер массивов, выделяемых для записи или чтения портов.
 
 

@@ -3,29 +3,22 @@
 /*
 Создание переменной в глобальной области памяти, но так как объявлена в классе как private имеет видимость только в классе
 */
-MesStorage PortHandler::storage;
+RingStorage<_buffer_t> PortHandler::storage;
 
 
 
 
-PortHandler::PortHandler(std::string &port_name, long baudrate) : port(port_name, baudrate)
+PortHandler::PortHandler(const std::string &port_name, long baudrate) : port(port_name, baudrate)
 {
 	id = storage.init();
-	//buf.src = id;
 }
 
 void PortHandler :: Run()
 {
 
- 	//for (;;)
  	{
 		if (buf.size = port.ReadMes(buf))
  			storage.push(id, buf);
- 
-// 		if (buf.size > 0)
-// 		{
-// 			std::cout << buf.data << std::endl;
-// 		}
 
 		storage.pop(id, buf);
 
