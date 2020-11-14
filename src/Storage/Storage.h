@@ -64,7 +64,7 @@ _user_id_t RingStorage<T>::init()
 }
 
 template <typename T>
-void RingStorage<T>::pop(_user_id_t user_id, T& data)
+void RingStorage<T>::push(_user_id_t user_id, T& data)
 {
 	size_t idx = getemptyidx();
 	storage[idx].data = data;
@@ -75,13 +75,13 @@ void RingStorage<T>::pop(_user_id_t user_id, T& data)
 }
 
 template <typename T>
-void RingStorage<T>::push(_user_id_t user_id, T& data)
+void RingStorage<T>::pop(_user_id_t user_id, T& data)
 {
 	memset(&data, 0, sizeof(T));
 
 	for (size_t idx = 0; idx < STORAGE_SIZE; idx++)
 	{
-		size_t last_elem = (current_idx - idx) % STORAGE_SIZE;	// идем в обратную сторону от последнего заполненного элемента
+		size_t last_elem = (current_idx + idx) % STORAGE_SIZE;	// идем от последнего заполненого элемента, здесть должна быть очередь, а не стек!
 
 		if (storage[last_elem].user_id != user_id && storage[last_elem].status == _FULL)
 		{

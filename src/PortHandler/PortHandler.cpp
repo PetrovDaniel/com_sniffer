@@ -11,6 +11,7 @@ RingStorage<_buffer_t> PortHandler::storage;
 PortHandler::PortHandler(const std::string &port_name, long baudrate) : port(port_name, baudrate)
 {
 	id = storage.init();
+	std::cout << "PortHandler " << port_name << " - storage user id [" << id << "] initialised!" << std::endl;
 }
 
 void PortHandler :: Run()

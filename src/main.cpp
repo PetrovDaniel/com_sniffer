@@ -4,7 +4,7 @@ int main()
 {
 	try
 	{
-		std::string port_name = "COM2";
+		std::string port_name = "COM6";
 		PortHandler sp(port_name, 19200);
 		port_name = "COM4";
 		PortHandler sp2(port_name, 19200);
