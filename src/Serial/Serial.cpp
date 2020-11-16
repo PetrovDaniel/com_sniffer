@@ -6,6 +6,7 @@
 SerialPort::SerialPort(const std::string& port_name, long baudrate)
 {
 	OpenPort(port_name, baudrate);
+	this->port_name = port_name;
 }
 
 SerialPort ::~SerialPort()
@@ -51,7 +52,8 @@ void SerialPort::OpenPort(const std::string &port_name, long baudrate)
 */
 void SerialPort::ClosePort()
 {
-	CloseHandle(port);			
+	CloseHandle(port);
+	std::cout << "Port " << this->port_name << " closed." << std::endl;
 }
 
 /** @brief функция записи в порт
@@ -74,7 +76,8 @@ size_t SerialPort::WriteToPort(char *buf, size_t numbytes)
 
 	return static_cast<size_t>(wrtnbytes);
 }
-
+/** @brief функция чтения из порта
+*/
 size_t SerialPort::ReadFromPort(char* buf, size_t numbytes)
 {
 	static DWORD sizemes = 0;		//Счетчик прочитанных байт.

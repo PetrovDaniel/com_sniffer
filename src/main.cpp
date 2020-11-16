@@ -18,8 +18,9 @@ int main()
 	catch (const std::exception &ex)
 	{
 		std::cout << "Error: " << ex.what() << std::endl;
-		system("pause");
 	}
+
+	system("pause");
 
 	return 0;
 }

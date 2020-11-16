@@ -9,7 +9,7 @@ class ISerialInterface
 {
 public:
 //     virtual ISerialInterface() = 0;
-//    virtual ~ISerialInterface() = 0;
+	virtual ~ISerialInterface() {};
     virtual size_t WriteToPort(char *buf, size_t numbutes) = 0;
     virtual size_t ReadFromPort(char *buf, size_t numbytes) = 0;
 protected:

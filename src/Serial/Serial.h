@@ -22,7 +22,7 @@ public:
 	*/
 	// класс наследник имеет свой конструктор и деструктор
 	SerialPort(const std::string& port_name, long baudrate);
-	~SerialPort();
+	virtual ~SerialPort();
 
 	size_t WriteToPort(char *buf, size_t numbutes);
 	size_t ReadFromPort(char *buf, size_t numbytes);
@@ -34,6 +34,7 @@ private:
 
 private:
 	HANDLE port;
+	std::string port_name;
 
 	/*
 		общее хранилище дл€ всех экземпл€ров класса
